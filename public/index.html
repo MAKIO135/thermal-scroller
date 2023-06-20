@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermal-Scroller</title>
+    <style>
+        body {
+            background: #000;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <img src="insta-capture.png" alt="">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+        let currentY = scrollY
+        
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        }
+
+        const d = debounce(e => {
+            const diff = (Math.abs(currentY - scrollY)) / 20 | 0
+            if(diff) socket.emit('scroll', diff)
+            currentY = scrollY
+        })
+
+        addEventListener('scroll', d)
+    </script>
+</body>
+</html>
