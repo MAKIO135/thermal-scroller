@@ -42,7 +42,7 @@
             const diff = (Math.abs(currentY - scrollY)) / 20 | 0
             if(diff) socket.emit('scroll', diff)
             currentY = scrollY
-        })
+        }, 500)
 
         addEventListener('scroll', d)
     </script>

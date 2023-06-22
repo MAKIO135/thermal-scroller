@@ -1,19 +1,20 @@
-const config = require('./config.json') //config.json file
 const { SerialPort } = require('serialport')
 const express = require('express')
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
+let port
 let isSerialOpen = false
-const port = new SerialPort({ path: config.serialPort, baudRate: config.serialRate })
-port.on('open', () => {
-    console.log(config.serialPort + ' open');
-    isSerialOpen = true
+SerialPort.list().then(r => {
+    let path = r.filter(d => d.manufacturer.includes('Arduino'))[0].path // uses first serialPort which is an Arduino
+    if(path) {
+        port = new SerialPort({ path, baudRate: 9600 })
+        port.on('open', () => isSerialOpen = true)
+    }
 })
 
-// http://localhost:8000/
-http.listen(config.serverPort, () => console.log('listening on', config.serverPort))
+http.listen(8000, () => console.log('http://localhost:8000/'))
 app.use(express.static(__dirname + '/public'))
 app.get('/', (req, res) => res.sendFile('index.html'))
 

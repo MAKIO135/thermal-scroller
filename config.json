@@ -1,5 +1,0 @@
-{
-	"serverPort" : 8000,
-	"serialPort" : "/dev/cu.usbmodem1101",
-	"serialRate" : 9600
-}
